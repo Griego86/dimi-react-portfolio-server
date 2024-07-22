@@ -20,3 +20,11 @@ export const comments = pgTable("comments", {
   username: varchar("username"),
   content: varchar("content")
 })
+
+export const users = pgTable("users", {
+  user_id: serial("user_id").primaryKey(),
+  username: varchar("username"),
+  email: varchar("email"),
+  password: varchar("password"),
+  created_at: varchar("created_at")
+})
