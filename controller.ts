@@ -5,8 +5,10 @@ import jwt from "jsonwebtoken";
 
 export async function createComment(req: Request, res: Response) {
   const { username, content } = req.body;
+  const now = new Date();
+  const timestamp = now.toISOString();
   try {
-    await db.insert(comments).values({ username, content });
+    await db.insert(comments).values({ username, content, created_at: timestamp });
     res
       .status(201)
       .json({ success: true, message: "comment created successfully" });
@@ -19,12 +21,26 @@ export async function createComment(req: Request, res: Response) {
 export async function getComments(req: Request, res: Response) {
   try {
     const commmentsQuery = await db
-      .select({ username: comments.username, content: comments.content })
+      .select()
       .from(comments);
     res.status(201).json(commmentsQuery);
   } catch (err) {
     console.log(err);
     res.status(500).json({ success: false, message: "Error getting comments" });
+  }
+}
+
+export async function deleteComment (req: Request, res: Response) {
+  const {comment_id} = req.body
+  const deleteMessage = ""
+  try {
+    await db 
+      .update(comments)
+      .set({content: deleteMessage})
+      .where(eq(comments.comment_id, comment_id))
+  }
+  catch (err) {
+
   }
 }
 
@@ -62,8 +78,13 @@ export async function validateUser(req: Request, res: Response) {
         { expiresIn: "2 days" }
       );
       return res.json({ result: {user, token}})
+    } else {
+      return res.json({result: {user: null, token: null} })
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send("Internal Server Error")
+  }
 }
 
 export async function decryptToken(req: Request, res: Response) {

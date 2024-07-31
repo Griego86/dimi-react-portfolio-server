@@ -16,9 +16,10 @@ export const pool = new Pool(
 export const db = drizzle(pool)
 
 export const comments = pgTable("comments", {
-  user_id: serial("user_id").primaryKey(),
+  comment_id: serial("comment_id").primaryKey(),
   username: varchar("username"),
-  content: varchar("content")
+  content: varchar("content"),
+  created_at: varchar("created_at")
 })
 
 export const users = pgTable("users", {
